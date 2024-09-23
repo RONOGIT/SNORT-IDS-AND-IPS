@@ -1,0 +1,29 @@
+Steps to Implement
+1. Setting up Snort on Linux
+First, install Snort on your Linux machine:
+
+sudo apt-get update
+sudo apt-get install snort
+
+2. Running Snort in IDS Mode
+
+
+sudo snort -A console -q -c /etc/snort/snort.conf -i eth0
+
+-A console: Outputs alerts to the console.
+-q: Runs Snort in quiet mode (suppresses non-alert output).
+-c: Points to the Snort configuration file.
+-i: Specifies the network interface to monitor (e.g., eth0).
+
+3. Configuring Snort for IPS Mode
+In IPS mode, Snort can block suspicious traffic. To enable IPS mode, you need to integrate Snort with iptables or another firewall.
+
+Add a Snort rule for blocking malicious traffic ( for a simple SYN flood):
+
+alert tcp any any -> any any (msg:"Potential SYN flood detected"; flags:S; threshold: type both, track by_src, count 20, seconds 10; sid:1000001; rev:1;)
+
+Activate IPS mode with the following command:
+
+sudo snort -A console -Q --daq afpacket -c /etc/snort/snort.conf -i eth0
+-Q: Enables inline mode for IPS.
+--daq afpacket: Data Acquisition Library (used for inline processing).
